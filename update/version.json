@@ -1,13 +1,13 @@
 {
-  "latest": "1.3.1",
+  "latest": "1.3.2",
   "released": "2026-11-18",
   "severity": "normal",
-  "download": "https://github.com/justojanfs/adstash/releases/download/v1.3.1/AdStash-v1.3.1.zip",
-  "page": "https://github.com/justojanfs/adstash/releases/tag/v1.3.1",
-  "sha256": "ad28a5caaff2caffc18e971a84a57505c044936028ad74be5183d78b7faa2013",
-  "size": 235959,
+  "download": "https://github.com/justojanfs/adstash/releases/download/v1.3.2/AdStash-v1.3.2.zip",
+  "page": "https://github.com/justojanfs/adstash/releases/tag/v1.3.2",
+  "sha256": "fbb58b328adcbbffef8241d595a63026699a92837bc40f01b15daf43caa7a343",
+  "size": 239099,
   "changelog": [
-    "Rilis uji alur pembaruan (tanpa perubahan fitur)",
-    "Jika banner ini muncul, mekanisme update berfungsi"
+    "Perbaikan: nama akun pengiklan Instagram kini terbaca di lebih banyak tampilan (tanpa header, tautan berparameter, hanya foto profil)",
+    "Pesan error pengecekan update lebih jelas"
   ]
 }
