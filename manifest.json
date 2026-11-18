@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "AdStash — Ad Library Pribadi",
   "short_name": "AdStash",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "description": "Simpan iklan dari Facebook, Instagram, dan TikTok ke ad library pribadimu: media, caption, pengiklan, kategori, dan catatan.",
   "icons": {
     "16": "icons/icon16.png",

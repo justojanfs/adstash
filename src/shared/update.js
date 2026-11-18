@@ -42,7 +42,7 @@ export async function checkForUpdate({ force = false } = {}) {
   const b = await base();
   if (!b) {
     await chrome.storage.local.set({ updateCheck: { at: Date.now(), error: 'Repo distribusi belum diatur (src/shared/config.js).' } });
-    return { error: 'no-repo' };
+    return { error: 'Repo distribusi belum diatur (isi REPO di src/shared/config.js).' };
   }
   const res = { at: Date.now(), error: '' };
   const tasks = [];

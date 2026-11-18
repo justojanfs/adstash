@@ -480,20 +480,66 @@
     return { advertiser, advertiserUrl, caption, postUrl };
   }
 
-  function extractInstagram(c) {
-    let advertiser = '';
-    let advertiserUrl = '';
-    const header = c.querySelector('header');
-    const scope = header || c;
-    for (const a of $$('a[href]', scope)) {
-      const h = a.getAttribute('href') || '';
-      const t = text(a);
-      if (/^\/[A-Za-z0-9._]+\/?$/.test(h) && t && t.length < 60 && !/^(explore|reels|direct)$/i.test(t)) {
-        advertiser = t.split('\n')[0];
-        advertiserUrl = abs(h);
-        break;
-      }
+  /* --- Instagram: nama akun pengiklan ---
+     DOM IG berubah-ubah (kadang tanpa <header>, href absolut/berparameter, nama hanya ada di alt avatar),
+     jadi dicoba beberapa strategi berurutan. */
+  const IG_RESERVED = /^(p|reel|reels|explore|direct|stories|accounts|ads|about|legal|web|tv|directory|challenge|privacy|developer|api|oauth|emails|session|login|download|lite|topics|locations|tags|archive|settings|notifications|inbox|sponsored|your_activity|igtv|graphql)$/i;
+  const IG_NOISE = /\s*(?:\bverified\b|terverifikasi|\bfollow(?:ing)?\b|ikuti|mengikuti|\bsponsored\b|bersponsor|berbayar|\bpaid partnership\b)\s*/gi;
+
+  function igHandle(href) {
+    let u;
+    try { u = new URL(href, location.href); } catch { return ''; }
+    if (!/(^|\.)instagram\.com$/i.test(u.hostname)) return '';
+    const seg = u.pathname.split('/').filter(Boolean);
+    if (seg.length !== 1 || !/^[A-Za-z0-9._]{1,30}$/.test(seg[0]) || IG_RESERVED.test(seg[0])) return '';
+    return seg[0];
+  }
+  function igName(raw) {
+    let t = String(raw || '').split('\n')[0].split(/\s[•·]\s|[•·]/)[0].replace(IG_NOISE, ' ').replace(/\s+/g, ' ').trim();
+    if (/^(more|lainnya|view|lihat|see)\b/i.test(t) || t.length > 60) t = '';
+    return t;
+  }
+  function igFromAvatarAlt(c) {
+    for (const img of $$('img[alt]', c)) {
+      const alt = (img.getAttribute('alt') || '').trim();
+      const m = alt.match(/^(.{1,40}?)['’]s profile picture$/i)
+        || alt.match(/^(?:profile picture of|foto profil(?: dari)?)\s+(.{1,40})$/i)
+        || alt.match(/^(.{1,40}?)\s+(?:profile picture|foto profil)$/i);
+      if (m && !/^(your|profil)$/i.test(m[1].trim())) return m[1].trim();
     }
+    return '';
+  }
+  function igFromPageMeta() {
+    const og = (document.querySelector('meta[property="og:title"]') || {}).content || document.title || '';
+    const m = og.match(/\(@([A-Za-z0-9._]+)\)/) || og.match(/^(.{1,60}?)\s+(?:on|di)\s+Instagram\b/i);
+    return m ? m[1] : '';
+  }
+
+  function igAdvertiser(c) {
+    const header = c.querySelector('header');
+    const scopes = header ? [header, c] : [c];
+    for (const scope of scopes) {
+      const cands = $$('a[href]', scope).map((a) => ({ a, h: igHandle(a.getAttribute('href') || '') })).filter((x) => x.h);
+      // 1) tautan profil yang punya teks nama (urutan DOM = paling atas lebih dulu)
+      for (const { a, h } of cands) {
+        const name = igName(text(a));
+        if (name) return { advertiser: name, advertiserUrl: `https://www.instagram.com/${h}/` };
+      }
+      // 2) tautan profil tanpa teks (avatar saja) → pakai handle dari URL
+      if (cands.length) return { advertiser: cands[0].h, advertiserUrl: `https://www.instagram.com/${cands[0].h}/` };
+    }
+    // 3) alt foto profil
+    const alt = igFromAvatarAlt(c);
+    if (alt) return { advertiser: alt, advertiserUrl: /^[A-Za-z0-9._]+$/.test(alt) ? `https://www.instagram.com/${alt}/` : '' };
+    // 4) halaman satu postingan: og:title
+    const meta = igFromPageMeta();
+    if (meta) return { advertiser: meta, advertiserUrl: /^[A-Za-z0-9._]+$/.test(meta) ? `https://www.instagram.com/${meta}/` : '' };
+    return { advertiser: '', advertiserUrl: '' };
+  }
+
+  function extractInstagram(c) {
+    const { advertiser, advertiserUrl } = igAdvertiser(c);
+    const header = c.querySelector('header');
     const caption = longestText(c, 'h1, span[dir="auto"], div[dir="auto"], span', [header]);
     let postUrl = '';
     const a = c.querySelector('a[href*="/p/"], a[href*="/reel/"]');

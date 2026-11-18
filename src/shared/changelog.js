@@ -2,6 +2,14 @@
 // Entri terbaru di atas. Skrip tools/release.mjs memakai entri ini untuk update/version.json.
 export const CHANGELOG = [
   {
+    version: '1.3.2',
+    date: '2026-11-18',
+    notes: [
+      'Perbaikan: nama akun pengiklan Instagram kini terbaca di lebih banyak tampilan (tanpa header, tautan berparameter, hanya foto profil)',
+      'Pesan error pengecekan update lebih jelas'
+    ]
+  },
+  {
     version: '1.3.1',
     date: '2026-11-18',
     notes: [
