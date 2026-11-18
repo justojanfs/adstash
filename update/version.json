@@ -1,13 +1,12 @@
 {
-  "latest": "1.3.3",
+  "latest": "1.3.4",
   "released": "2026-11-18",
   "severity": "normal",
-  "download": "https://github.com/justojanfs/adstash/releases/download/v1.3.3/AdStash-v1.3.3.zip",
-  "page": "https://github.com/justojanfs/adstash/releases/tag/v1.3.3",
-  "sha256": "8ea3662e8464093202b3ee658a5bf8d8a65a93b0842bfe291a14636b7a248b27",
-  "size": 239441,
+  "download": "https://github.com/justojanfs/adstash/releases/download/v1.3.4/AdStash-v1.3.4.zip",
+  "page": "https://github.com/justojanfs/adstash/releases/tag/v1.3.4",
+  "sha256": "243ea5a3ae03961bd65ff87a9c31c979496aaf08d29e6d4b46ef02dda0c02d21",
+  "size": 240171,
   "changelog": [
-    "Banner \"AdStash diperbarui ke …\" setelah update dihapus",
-    "Tampilan banner pemberitahuan di Library dirapikan"
+    "Panah dropdown (kategori, media, potensi, urutan) diberi jarak dari tepi"
   ]
 }
