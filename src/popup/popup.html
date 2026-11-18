@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header>
+    <img src="../../icons/icon48.png" alt="">
+    <div>
+      <div class="title">AdStash</div>
+      <div class="sub" id="sub">Ad library pribadi</div>
+    </div>
+  </header>
+
+  <div class="upd" id="upd" hidden>
+    <span id="updTxt"></span>
+    <button id="updGo">Lihat</button>
+  </div>
+  <button class="open" id="open">Buka Library</button>
+
+  <div class="site" id="site" hidden>
+    <label class="toggle"><input type="checkbox" id="siteToggle"><span></span><b id="siteName"></b>: tombol Simpan aktif</label>
+  </div>
+
+  <div class="sec-title" id="recentTitle" hidden>Terakhir disimpan</div>
+  <ul class="recent" id="recent"></ul>
+
+  <p class="tip">Arahkan kursor ke postingan → klik <b>Simpan</b>. Shortcut <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd>.</p>
+  <script type="module" src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "schema": 1,
+  "rev": "2026-11-18.1",
+  "labels": {
+    "libraryId": ["Library ID", "ID Galeri", "ID Pustaka", "ID Arsip", "ID Perpustakaan"],
+    "startedRunning": ["started running on", "mulai ditayangkan pada", "mulai ditayangkan", "mulai tayang pada", "mulai berjalan pada"]
+  },
+  "winRules": {}
+}
