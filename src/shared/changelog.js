@@ -2,6 +2,14 @@
 // Entri terbaru di atas. Skrip tools/release.mjs memakai entri ini untuk update/version.json.
 export const CHANGELOG = [
   {
+    version: '1.3.1',
+    date: '2026-11-18',
+    notes: [
+      'Rilis uji alur pembaruan (tanpa perubahan fitur)',
+      'Jika banner ini muncul, mekanisme update berfungsi'
+    ]
+  },
+  {
     version: '1.3.0',
     date: '2026-11-18',
     notes: [
