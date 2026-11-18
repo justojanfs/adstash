@@ -1,5 +1,4 @@
 // UI pembaruan di Library: banner, modal langkah update, status di Pengaturan.
-import { CHANGELOG } from '../shared/changelog.js';
 import { cmpVer } from '../shared/semver.js';
 import { isPlaceholderRepo } from '../shared/config.js';
 const storeManaged = () => !!chrome.runtime.getManifest().update_url;
@@ -45,7 +44,7 @@ export async function initUpdates(c) {
     await drawNotices();
   });
   chrome.storage.onChanged.addListener((ch) => {
-    if (ch.updateInfo || ch.updateState || ch.remoteConfig || ch.updateCheck || ch.justUpdated || ch.migrationError || ch.schemaAhead) {
+    if (ch.updateInfo || ch.updateState || ch.remoteConfig || ch.updateCheck || ch.migrationError || ch.schemaAhead) {
       drawNotices(); drawSettings();
     }
   });
@@ -53,8 +52,12 @@ export async function initUpdates(c) {
 }
 
 async function state() {
-  return chrome.storage.local.get(['updateInfo', 'updateState', 'updateCheck', 'remoteConfig', 'justUpdated', 'migrationError', 'schemaAhead', 'preMigrationSnapshot', 'seenAnnounce']);
+  return chrome.storage.local.get(['updateInfo', 'updateState', 'updateCheck', 'remoteConfig', 'migrationError', 'schemaAhead', 'preMigrationSnapshot', 'seenAnnounce']);
 }
+
+const X_BTN = (act, title, extra = '') => `<button class="x" data-act="${act}" ${extra} title="${title}" aria-label="${title}"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>`;
+const notice = (cls, title, text, actions = '') =>
+  `<div class="notice ${cls}"><div class="body">${title ? `<b>${title}</b>` : ''}${text ? `<span class="sp" title="${esc(text)}">${esc(text)}</span>` : ''}</div>${actions ? `<div class="acts">${actions}</div>` : ''}</div>`;
 
 export async function drawNotices() {
   const st = await state();
@@ -62,22 +65,22 @@ export async function drawNotices() {
   const out = [];
   const u = st.updateInfo;
   if (st.schemaAhead) {
-    out.push(`<div class="notice err"><b>Versi ekstensi ini lebih lama dari data kamu.</b><span class="sp">Data dibuat oleh versi yang lebih baru (skema ${esc(st.schemaAhead.found)}). Pasang versi terbaru AdStash dan jangan menyimpan iklan dulu.</span></div>`);
+    out.push(notice('err', 'Versi ekstensi ini lebih lama dari data kamu.', `Data dibuat oleh versi yang lebih baru (skema ${st.schemaAhead.found}). Pasang versi terbaru AdStash dan jangan menyimpan iklan dulu.`));
   }
   if (st.migrationError) {
-    out.push(`<div class="notice err"><b>Migrasi data gagal.</b><span class="sp">${esc(st.migrationError.message)}. Data lamamu aman; kamu bisa memulihkan snapshot di Pengaturan → Pembaruan.</span><button class="btn sm ghost" data-act="settings">Buka Pengaturan</button></div>`);
+    out.push(notice('err', 'Migrasi data gagal.', `${st.migrationError.message}. Data lamamu aman; kamu bisa memulihkan snapshot di Pengaturan → Pembaruan.`, '<button class="btn sm ghost" data-act="settings">Buka Pengaturan</button>'));
   }
   if (!storeManaged() && u && u.available && (u.mustUpdate || u.severity === 'important' || st.updateState?.dismissedVersion !== u.latest)) {
-    const cls = u.mustUpdate ? 'err' : 'upd';
-    out.push(`<div class="notice ${cls}"><b>${u.mustUpdate ? 'Versi ini sudah tidak didukung.' : `AdStash ${esc(u.latest)} tersedia`}</b><span class="sp">Kamu memakai ${esc(cur())}.${u.changelog[0] ? ' ' + esc(u.changelog[0]) : ''}</span><button class="btn sm primary" data-act="upd">Lihat &amp; perbarui</button>${u.mustUpdate || u.severity === 'important' ? '' : '<button class="x" data-act="dismiss" title="Lewati versi ini">×</button>'}</div>`);
-  }
-  if (st.justUpdated && st.justUpdated.to === cur()) {
-    const entry = CHANGELOG.find((c) => c.version === st.justUpdated.to);
-    out.push(`<div class="notice info"><b>AdStash diperbarui ke ${esc(st.justUpdated.to)}.</b><span class="sp">${entry ? esc(entry.notes.join(' · ')) : 'Lihat catatan perubahan di rilis.'}</span><button class="x" data-act="ack" title="Tutup">×</button></div>`);
+    const skip = u.mustUpdate || u.severity === 'important' ? '' : X_BTN('dismiss', 'Lewati versi ini');
+    out.push(notice(u.mustUpdate ? 'err' : 'upd',
+      u.mustUpdate ? 'Versi ini sudah tidak didukung.' : `AdStash ${esc(u.latest)} tersedia`,
+      `Kamu memakai ${cur()}.${u.changelog[0] ? ' ' + u.changelog[0] : ''}`,
+      `<button class="btn sm primary" data-act="upd">Lihat &amp; perbarui</button>${skip}`));
   }
   const ann = (st.remoteConfig && st.remoteConfig.announce) || (u && u.announce);
   if (ann && ann.text && st.seenAnnounce !== ann.id) {
-    out.push(`<div class="notice info"><span class="sp">${esc(ann.text)}</span>${ann.url ? `<a class="btn sm ghost" href="${esc(ann.url)}" target="_blank" rel="noopener">Buka</a>` : ''}<button class="x" data-act="annx" data-id="${esc(ann.id)}" title="Tutup">×</button></div>`);
+    out.push(notice('info', '', ann.text,
+      `${ann.url ? `<a class="btn sm ghost" href="${esc(ann.url)}" target="_blank" rel="noopener">Buka</a>` : ''}${X_BTN('annx', 'Tutup', `data-id="${esc(ann.id)}"`)}`));
   }
   box.innerHTML = out.join('');
   box.onclick = async (e) => {
@@ -86,7 +89,6 @@ export async function drawNotices() {
     const a = b.dataset.act;
     if (a === 'upd') openModal();
     else if (a === 'dismiss') await send({ type: 'dismissUpdate', version: u.latest });
-    else if (a === 'ack') { await chrome.storage.local.remove('justUpdated'); drawNotices(); }
     else if (a === 'annx') { await chrome.storage.local.set({ seenAnnounce: b.dataset.id }); drawNotices(); }
     else if (a === 'settings') $('#btnSettings').click();
   };

@@ -83,13 +83,10 @@ export function scheduleChecks() {
   });
 }
 
-// Deteksi versi berubah (update manual lalu "Muat ulang") → simpan catatan "baru di versi X".
+// Versi berubah (update manual lalu "Muat ulang"): catat versi terakhir & hitung ulang status "update tersedia".
 export async function noteVersionChange() {
   const { lastSeenVersion } = await chrome.storage.local.get('lastSeenVersion');
   const now = cur();
-  if (lastSeenVersion && lastSeenVersion !== now) {
-    await chrome.storage.local.set({ justUpdated: { from: lastSeenVersion, to: now, at: Date.now() } });
-  }
   if (lastSeenVersion !== now) {
     await chrome.storage.local.set({ lastSeenVersion: now });
     // info versi lama bisa basi: hitung ulang "available" terhadap versi terpasang sekarang

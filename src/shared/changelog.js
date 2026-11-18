@@ -2,6 +2,14 @@
 // Entri terbaru di atas. Skrip tools/release.mjs memakai entri ini untuk update/version.json.
 export const CHANGELOG = [
   {
+    version: '1.3.3',
+    date: '2026-11-18',
+    notes: [
+      'Banner "AdStash diperbarui ke …" setelah update dihapus',
+      'Tampilan banner pemberitahuan di Library dirapikan'
+    ]
+  },
+  {
     version: '1.3.2',
     date: '2026-11-18',
     notes: [
