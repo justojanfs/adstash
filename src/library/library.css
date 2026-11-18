@@ -268,3 +268,12 @@ kbd{background:#F0EFEB;border:1px solid var(--line);border-bottom-width:2px;bord
 .upd-sheet ol.steps li{margin:8px 0}
 .upd-sheet .hash{font:11.5px ui-monospace,Consolas,monospace;color:var(--muted);word-break:break-all}
 .upd-sheet .foot{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+
+/* Dropdown: panah dipindah ke dalam dengan jarak yang pas (bukan menempel di tepi) */
+.filters select,.field select,.win-grid select{
+  -webkit-appearance:none;appearance:none;
+  padding-right:34px;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B6B66' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M6 9l6 6 6-6'/></svg>");
+  background-repeat:no-repeat;background-position:right 13px center;background-size:12px
+}
+.filters select{padding-left:12px}

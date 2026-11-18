@@ -2,6 +2,11 @@
 // Entri terbaru di atas. Skrip tools/release.mjs memakai entri ini untuk update/version.json.
 export const CHANGELOG = [
   {
+    version: '1.3.4',
+    date: '2026-11-18',
+    notes: ['Panah dropdown (kategori, media, potensi, urutan) diberi jarak dari tepi']
+  },
+  {
     version: '1.3.3',
     date: '2026-11-18',
     notes: [
